@@ -1,0 +1,10 @@
+2023-04-01 - first version - 12:50h
+
+added
+CR_RENDER var for storing render
+CR_POINT var for storing point positon and look
+CR_Fill_All() fill all render with chosen char
+CR_Print_Render() show render to screen
+CR_Point2Render() adds point to render
+CR_GetInput() gets input without enter (returns int)
+CR_Int2Char() converting what CR_GetInput() returnd to char
