@@ -1,4 +1,5 @@
 #include "CRender.c"
+//resolution any
 
 int main(void)
 {
