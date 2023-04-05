@@ -1,15 +1,18 @@
-//version 0.10
+//CRender 0.20v BY GRATHRRAM-SCRIPTGUY ON GNU GPL
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
-#define RESOLUTION_Y 5  //change this to change resolurion y
-#define RESOLUTION_X 10 //change this to change resolurion x
-#define CR_KEY_A 0
+//#define NULL ((void *)0)
 
 
-typedef char CR_RENDER[RESOLUTION_X + 1][RESOLUTION_Y + 1];
+typedef struct CR_RENDER
+{
+    int RESOLUTION_Y;
+    int RESOLUTION_X;
+    char *RND;
+} CR_RENDER;
 
 typedef struct CR_POINT
 {
@@ -18,35 +21,79 @@ typedef struct CR_POINT
     char look;
 } CR_POINT;
 
-
-
-void CR_Fill_All(CR_RENDER RENDER,char FILL_WITH)
+void CR_RENDER_ALOC(CR_RENDER *RENDER)
 {
-    for (int y = 0; y < RESOLUTION_Y; y++)
+    RENDER->RND = malloc(RENDER->RESOLUTION_X * RENDER->RESOLUTION_Y);
+}
+
+void CR_RENDER_REALOC(CR_RENDER *RENDER)
+{
+    RENDER->RND = realloc(RENDER->RND,RENDER->RESOLUTION_X * RENDER->RESOLUTION_Y);
+}
+
+void CR_RENDER_FILL_ALL(CR_RENDER *RENDER,char FILL_WITH)
+{
+    int gc = 0;
+    for(int y = 0;y < RENDER->RESOLUTION_Y; y++)
     {
-        for (int x = 0; x < RESOLUTION_X; x++)
+        for(int x = 0;x < RENDER->RESOLUTION_X; x++)
         {
-            RENDER[x][y] = FILL_WITH;
+            RENDER->RND[gc] = FILL_WITH;
+            gc++;
         }
     }
 }
 
-void CR_Print_Render(CR_RENDER RENDER)
+void CR_RENDER_PRINT(CR_RENDER RENDER)
 {
-    for (int y = 0; y < RESOLUTION_Y; y++)
+    int gc = 0;
+    for(int y = 0;y < RENDER.RESOLUTION_Y; y++)
     {
-        for (int x = 0; x < RESOLUTION_X; x++)
+        for(int x = 0;x < RENDER.RESOLUTION_X; x++)
         {
-            printf("%c",RENDER[x][y]);
+            printf("%c",RENDER.RND[gc]);
+            gc++;
         }
         printf("\n");
     }
 }
 
-void CR_Point2Render(CR_RENDER RENDER,CR_POINT POINT)
+void CR_Point2Render(CR_RENDER *RENDER,CR_POINT POINT)
 {
-    RENDER[POINT.x][POINT.y] = POINT.look;
+    int gc = 0;
+    for(int y = 0;y < RENDER->RESOLUTION_Y; y++)
+    {
+        for(int x = 0;x < RENDER->RESOLUTION_X; x++)
+        {
+            if(x == POINT.x && y == POINT.y)
+            {
+                RENDER->RND[gc] = POINT.look;
+            }
+            gc++;
+        }
+    }
 }
+
+void CR_RENDER_SET_PIXEL(CR_RENDER *RENDER,int X,int Y,char SET_WITH)
+{
+    int gc = 0;
+    for(int y = 0;y < RENDER->RESOLUTION_Y; y++)
+    {
+        for(int x = 0;x < RENDER->RESOLUTION_X; x++)
+        {
+            if(x == X && y == Y)
+            {
+                RENDER->RND[gc] = SET_WITH;
+            }
+            gc++;
+        }
+    }
+}
+
+//void CR_RENDER_DRAW_LINE(CR_RENDER *RENDER,int FROM_X,int FROM_Y,int TO_X,int TO_Y,char WITH)
+//{
+//    int setin[FROM_X - TO_X + FROM_Y - FROM_Y][2];    IGNORE!!!!!!!
+//}
 
 int CR_GetInput(void)
 {
