@@ -1,5 +1,6 @@
 #include "CRender.c"
 //resolution any
+//version of CRender -> 0.10
 
 int main(void)
 {
