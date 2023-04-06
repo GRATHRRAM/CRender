@@ -47,9 +47,13 @@ int main(void)
         CR_RENDER_FILL_ALL(&RND,'#');
         for(int gc = 0; gc < RND.RESOLUTION_X * RND.RESOLUTION_Y;gc++)
         {
-            CR_RENDER_SET_DIRECT_COLOR_of_PIXEL(&RND,gc,rand()%6+2);
+           RND.COLOR_INF[gc] = rand()% 6 + 2;
         }
         CR_Rect2Render(&RND,RCT);
+        for(int i = 0;i < RND.RESOLUTION_X * RND.RESOLUTION_Y + 1;i++)
+        {
+            printf("COLOR_INF[%i] = %i;\n",i,RND.COLOR_INF[i]);
+        }
         CR_RENDER_PRINT(RND);
     }
     return 0;
