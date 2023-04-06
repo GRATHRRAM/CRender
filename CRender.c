@@ -74,14 +74,14 @@ void CR_RENDER_FILL_ALL(CR_RENDER *RENDER,char FILL_WITH)
     }
 }
 
-void CR_RENDER_FILL_ALL_COLOR(CR_RENDER *RENDER)
+void CR_RENDER_FILL_ALL_COLOR(CR_RENDER *RENDER,int COLOR)
 {
     int gc = 0;
     for(int y = 0;y < RENDER->RESOLUTION_Y; y++)
     {
         for(int x = 0;x < RENDER->RESOLUTION_X; x++)
         {
-            RENDER->COLOR_INF[gc] = 4;
+            RENDER->COLOR_INF[gc] = COLOR;
             gc++;
         }
     }
@@ -126,7 +126,10 @@ void CR_RENDER_PRINT(CR_RENDER RENDER)
             {
                 printf(CR_WITHE);
             }
-            
+            else
+            {
+                printf(CR_WITHE);
+            }
             printf("%c",RENDER.RND[gc]);
             gc++;
         }
@@ -160,7 +163,7 @@ void CR_RENDER_SET_COLOR_OF_PIXEL(CR_RENDER *RENDER,int X,int Y,int COLOR)
     int gc = 0;
     for(int y = 0;y < RENDER->RESOLUTION_Y; y++)
     {
-        for(int x = 0;x < RENDER->RESOLUTION_X; x++)
+        for(int x = 0;x < RENDER->RESOLUTION_X; x++)\
         {
             if(x == X && y == Y)
             {
