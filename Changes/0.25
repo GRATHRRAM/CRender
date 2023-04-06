@@ -1,0 +1,3 @@
+CR_CIRCLE will be used soon
+CR_RENDER_SET_DIRECT_PIXEL you can directly (faster) set pixel in render
+CR_RENDER_DRAW_LINE you can draw line from where ever you want to where ever you want!
