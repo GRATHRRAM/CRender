@@ -3,3 +3,10 @@ Rewrited intire code!!!
 CR_RENDER_ALOC() allocate memory for render
 CR_RENDER_REALOC() realocate memory for render
 CR_RENDER_SET_PIXEL() sets pixel in reder to chsen char
+
+EDIT NEW FUNCTIONS NAMES!
+
+CR_RENDER_FILL_ALL()
+CR_RENDER_PRINT()
+
+and other
