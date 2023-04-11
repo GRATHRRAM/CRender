@@ -1,17 +1,26 @@
-//CRender 0.25v BY GRATHRRAM-SCRIPTGUY ON GNU GPL
+//CRender 0.35v BY GRATHRRAM-SCRIPTGUY ON GNU GPL
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
-#define CR_BLACK "\033[0;30m" //1
-#define CR_RED "\033[0;31m"   //2
-#define CR_GREEN "\033[0;32m" //3
-#define CR_YELOW "\033[0;33m" //4
-#define CR_BLUE "\033[0;34m"  //5
-#define CR_PURPLE "\033[0;35m"//6
-#define CR_CYAN "\033[0;36m"  //7
-#define CR_WITHE "\033[0;37m" //8
+#define CR_TO_PRINT_BLACK "\033[0;30m" //1
+#define CR_TO_PRINT_RED "\033[0;31m"   //2
+#define CR_TO_PRINT_GREEN "\033[0;32m" //3
+#define CR_TO_PRINT_YELOW "\033[0;33m" //4
+#define CR_TO_PRINT_BLUE "\033[0;34m"  //5
+#define CR_TO_PRINT_PURPLE "\033[0;35m"//6
+#define CR_TO_PRINT_CYAN "\033[0;36m"  //7
+#define CR_TO_PRINT_WHITE "\033[0;37m" //8
+#define CR_BLACK  1
+#define CR_RED    2
+#define CR_GREEN  3
+#define CR_YELOW  4
+#define CR_BLUE   5
+#define CR_PURPLE 6
+#define CR_CYAN   7
+#define CR_WHITE  8
+
 //#define NULL ((void *)0)
 
 
@@ -27,6 +36,7 @@ typedef struct CR_POINT
 {
     int x;
     int y;
+    int color;
     char look;
 } CR_POINT;
 
@@ -36,10 +46,11 @@ typedef struct CR_RECT
     int y;
     int width;
     int height;
+    int color;
     char look;
 } CR_RECT;
 
-
+/*
 typedef struct CR_CIRCLE
 {
     int x;
@@ -47,18 +58,19 @@ typedef struct CR_CIRCLE
     int radius;
     char look;
 } CR_CIRCLE;
+*/
 
 
 void CR_RENDER_ALOC(CR_RENDER *RENDER)
 {
     RENDER->RND = malloc(RENDER->RESOLUTION_X * RENDER->RESOLUTION_Y);
-    RENDER->COLOR_INF = malloc(RENDER->RESOLUTION_X * RENDER->RESOLUTION_Y);
+    RENDER->COLOR_INF = (int*) malloc(sizeof(int) * RENDER->RESOLUTION_X * RENDER->RESOLUTION_Y);
 }
 
 void CR_RENDER_REALOC(CR_RENDER *RENDER)
 {
     RENDER->RND = realloc(RENDER->RND,RENDER->RESOLUTION_X * RENDER->RESOLUTION_Y);
-    RENDER->COLOR_INF = realloc(RENDER->RND,RENDER->RESOLUTION_X * RENDER->RESOLUTION_Y);
+    RENDER->COLOR_INF = (int*) realloc(RENDER->COLOR_INF,sizeof(int) * RENDER->RESOLUTION_X * RENDER->RESOLUTION_Y);
 }
 
 void CR_RENDER_FILL_ALL(CR_RENDER *RENDER,char FILL_WITH)
@@ -96,39 +108,39 @@ void CR_RENDER_PRINT(CR_RENDER RENDER)
         {
             if(RENDER.COLOR_INF[gc] == 1)
             {
-                printf(CR_BLACK);
+                printf(CR_TO_PRINT_BLACK);
             }
             else if(RENDER.COLOR_INF[gc] == 2)
             {
-                printf(CR_RED);
+                printf(CR_TO_PRINT_RED);
             }
             else if(RENDER.COLOR_INF[gc] == 3)
             {
-                printf(CR_GREEN);
+                printf(CR_TO_PRINT_GREEN);
             }
             else if(RENDER.COLOR_INF[gc] == 4)
             {
-                printf(CR_YELOW);
+                printf(CR_TO_PRINT_YELOW);
             }
             else if(RENDER.COLOR_INF[gc] == 5)
             {
-                printf(CR_BLUE);
+                printf(CR_TO_PRINT_BLUE);
             }
             else if(RENDER.COLOR_INF[gc] == 6)
             {
-                printf(CR_PURPLE);
+                printf(CR_TO_PRINT_PURPLE);
             }
             else if(RENDER.COLOR_INF[gc] == 7)
             {
-                printf(CR_CYAN);
+                printf(CR_TO_PRINT_CYAN);
             }
             else if(RENDER.COLOR_INF[gc] == 8)
             {
-                printf(CR_WITHE);
+                printf(CR_TO_PRINT_WHITE);
             }
             else
             {
-                printf(CR_WITHE);
+                printf(CR_TO_PRINT_WHITE);
             }
             printf("%c",RENDER.RND[gc]);
             gc++;
@@ -204,15 +216,18 @@ void CR_Point2Render(CR_RENDER *RENDER,CR_POINT POINT)
             if(x == POINT.x && y == POINT.y)
             {
                 RENDER->RND[gc] = POINT.look;
+                if(!POINT.color) RENDER->COLOR_INF[gc] = POINT.color;
+                else RENDER->COLOR_INF[gc] = CR_WHITE;
             }
             gc++;
         }
     }
 }
 
+/*
 void CR_Circle2Render(CR_RENDER *RENDER,CR_CIRCLE CIRCLE)
 {
-    printf("CR_Circle2Render not working yet...");
+    //printf("CR_Circle2Render not working yet...\n");
     if(CIRCLE.radius == 1)
     {
         CR_RENDER_SET_PIXEL(RENDER,CIRCLE.x,CIRCLE.y,CIRCLE.look);
@@ -223,19 +238,54 @@ void CR_Circle2Render(CR_RENDER *RENDER,CR_CIRCLE CIRCLE)
         return;
     }
 
-    for(int cout = -1;cout < CIRCLE.radius;cout++)
+    int CurentRadius = 0;
+
+    for(int Y = CIRCLE.y - CIRCLE.radius; Y < CIRCLE.y + CIRCLE.radius;Y++)
     {
-        CR_RENDER_SET_PIXEL(RENDER,CIRCLE.x,CIRCLE.y + cout,CIRCLE.look);
-        for(int X_TO_FILL = CIRCLE.x;X_TO_FILL < CIRCLE.radius + CIRCLE.x;X_TO_FILL++)
+        for(int x = CIRCLE.x;x < CurentRadius + CIRCLE.x;x++)
         {
-            CR_RENDER_SET_PIXEL(RENDER,X_TO_FILL,cout + CIRCLE.y,CIRCLE.look);
+            CR_RENDER_SET_PIXEL(RENDER,x,Y,CIRCLE.look);
         }
+        CurentRadius++;
+        if (CurentRadius > CIRCLE.radius)
+        {
+            CurentRadius = 0;
+            break;
+        }
+        
     }
-    for(int cout = 1 - CIRCLE.radius;cout < CIRCLE.radius;cout++)
+    for(int Y = CIRCLE.y + CIRCLE.radius; Y > CIRCLE.y;Y--)
     {
-        CR_RENDER_SET_PIXEL(RENDER,CIRCLE.x,CIRCLE.y + cout,CIRCLE.look);
-    }   
+        for(int x = CIRCLE.x;x < CurentRadius + CIRCLE.x;x++)
+        {
+            CR_RENDER_SET_PIXEL(RENDER,x,Y,CIRCLE.look);
+        }
+        CurentRadius++;
+        if (CurentRadius > CIRCLE.radius)
+        {
+            CurentRadius = CIRCLE.radius;
+            break;
+        }
+        
+    }
+    //up is right
+    //down is left
+    for(int Y = CIRCLE.y - CIRCLE.radius; Y < CIRCLE.y + CIRCLE.radius;Y++)
+    {
+        for(int x = CIRCLE.x;x < CurentRadius;x++)
+        {
+            CR_RENDER_SET_PIXEL(RENDER,CIRCLE.x - CurentRadius,Y,CIRCLE.look);
+        }
+        CurentRadius++;
+        if (CurentRadius > CIRCLE.radius)
+        {
+            CurentRadius = 0;
+            break;
+        }
+        
+    }
 }
+*/
 
 void CR_Rect2Render(CR_RENDER *RENDER,CR_RECT RECT)
 {
@@ -246,8 +296,28 @@ void CR_Rect2Render(CR_RENDER *RENDER,CR_RECT RECT)
             CR_RENDER_SET_PIXEL(RENDER,RECT.x + cw,RECT.y + y,RECT.look);
         }
     }
+   
+    for(int h = RECT.y;h < RECT.height + RECT.y;h++)
+    {
+        for(int w = RECT.x;w < RECT.width + RECT.x;w++)
+        {
+            int gc = 0;
+            for(int y = 0;y < RENDER->RESOLUTION_Y; y++)
+            {   
+                for(int x = 0;x < RENDER->RESOLUTION_X; x++)
+                {
+                    if(x == w && y == h)
+                    {
+                        RENDER->COLOR_INF[gc] = RECT.color;
+                    }
+                    gc++;
+                }
+            }   
+        }
+    }
+        
+    
 }
-
 
 int CR_GetInput(void)
 {
