@@ -1,1 +1,2 @@
-
+CR_TO_PRINT(color) if you print using pri ntf or other color in color will change
+CR_(color) (int) paramether to some functions
