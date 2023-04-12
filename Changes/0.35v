@@ -1,2 +1,3 @@
 CR_TO_PRINT(color) if you print using pri ntf or other color in color will change
 CR_(color) (int) paramether to some functions
+ CR_RENDER_FILL_ALL_COLOR fills intire render with chozen color
