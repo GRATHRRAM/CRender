@@ -79,7 +79,7 @@
 #define CR_BACK_BLUE_BRIGHT    30
 #define CR_BACK_PURPLE_BRIGHT  31
 #define CR_BACK_CYAN_BRIGHT    32
-#define CR_BACK_WHITE_else if(RENDER.COLOR_INF[gc] == 31) printf(CR_TO_PRINT_BACK_CYAN_BRIGHT);BRIGHT   33
+#define CR_BACK_WHITE_BRIGHT   33
 
 //dodaj miganie debilu
 
